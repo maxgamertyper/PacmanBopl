@@ -14,7 +14,7 @@ using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Pacman
 {
-    [BepInPlugin("com.maxgamertyper1.pacmanborder", "Pacman Border", "1.1.0")]
+    [BepInPlugin("com.maxgamertyper1.pacmanborder", "Pacman Border", "1.2.0")]
     public class Suffocated : BaseUnityPlugin
     {
         private void Log(string message)
@@ -41,6 +41,8 @@ namespace Pacman
             Patch(harmony, typeof(ShootQuantum), "Shoot", "BlinkPatch", true);
             Patch(harmony, typeof(ShootDuplicator), "Shoot", "DuplicatorPatch", true);
             Patch(harmony, typeof(BlackHole), "Update", "BlackHolePatch", true);
+            Patch(harmony, typeof(TeleportIndicator), "UpdateSim", "TeleportPatch", true);
+            Patch(harmony, typeof(RevivePositionIndicator), "UpdateSim", "RevivePatch", true);
         }
 
         private void OnDestroy()
@@ -48,7 +50,7 @@ namespace Pacman
             Log($"Bye Bye From {PluginInfo.PLUGIN_GUID}");
         }
 
-        private void Patch(Harmony harmony, Type OriginalClass , string OriginalMethod, string PatchMethod, bool prefix)
+        private void Patch(Harmony harmony, Type OriginalClass, string OriginalMethod, string PatchMethod, bool prefix)
         {
             MethodInfo MethodToPatch = AccessTools.Method(OriginalClass, OriginalMethod); // the method to patch
             MethodInfo Patch = AccessTools.Method(typeof(Patches), PatchMethod);
@@ -375,6 +377,36 @@ namespace Pacman
                 else
                 {
                     __instance.hitbox.position = new Vec2(SceneBounds.BlastZone_XMin + (Fix)1, __instance.hitbox.position.y);
+                }
+            }
+        }
+
+        public static void TeleportPatch(ref TeleportIndicator __instance, ref Fix SimDeltaTime)
+        {
+            if (__instance.hurtbox.position.x < SceneBounds.BlastZone_XMin || __instance.hurtbox.position.x > SceneBounds.BlastZone_XMax)
+            {
+                if (__instance.hurtbox.position.x < SceneBounds.BlastZone_XMin)
+                {
+                    __instance.hurtbox.position = new Vec2(SceneBounds.BlastZone_XMax - (Fix)1, __instance.hurtbox.position.y);
+                }
+                else
+                {
+                    __instance.hurtbox.position = new Vec2(SceneBounds.BlastZone_XMin + (Fix)1, __instance.hurtbox.position.y);
+                }
+            }
+        }
+
+        public static void RevivePatch(ref RevivePositionIndicator __instance, ref Fix SimDeltaTime)
+        {
+            if (__instance.hurtbox.position.x < SceneBounds.BlastZone_XMin || __instance.hurtbox.position.x > SceneBounds.BlastZone_XMax)
+            {
+                if (__instance.hurtbox.position.x < SceneBounds.BlastZone_XMin)
+                {
+                    __instance.hurtbox.position = new Vec2(SceneBounds.BlastZone_XMax - (Fix)1, __instance.hurtbox.position.y);
+                }
+                else
+                {
+                    __instance.hurtbox.position = new Vec2(SceneBounds.BlastZone_XMin + (Fix)1, __instance.hurtbox.position.y);
                 }
             }
         }
