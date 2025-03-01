@@ -1,4 +1,4 @@
-using BepInEx;
+﻿using BepInEx;
 using BoplFixedMath;
 using HarmonyLib;
 using Microsoft.SqlServer.Server;
@@ -14,7 +14,7 @@ using static UnityEngine.ParticleSystem.PlaybackState;
 
 namespace Pacman
 {
-    [BepInPlugin("com.maxgamertyper1.pacmanborder", "Pacman Border", "1.2.0")]
+    [BepInPlugin("com.maxgamertyper1.pacmanborder", "Pacman Border", "1.2.1")]
     public class Suffocated : BaseUnityPlugin
     {
         private void Log(string message)
@@ -396,7 +396,7 @@ namespace Pacman
             }
         }
 
-        public static void RevivePatch(ref RevivePositionIndicator __instance, ref Fix SimDeltaTime)
+        public static bool RevivePatch(ref RevivePositionIndicator __instance, ref Fix SimDeltaTime)
         {
             if (__instance.hurtbox.position.x < SceneBounds.BlastZone_XMin || __instance.hurtbox.position.x > SceneBounds.BlastZone_XMax)
             {
@@ -409,6 +409,10 @@ namespace Pacman
                     __instance.hurtbox.position = new Vec2(SceneBounds.BlastZone_XMin + (Fix)1, __instance.hurtbox.position.y);
                 }
             }
+            Vec2 vec = __instance.body.position;
+            Vec2 offset = new Vec2((Fix)2L, (Fix)2L);
+            __instance.body.position = vec;
+            return false;
         }
     }
 }
