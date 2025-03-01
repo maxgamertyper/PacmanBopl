@@ -12,3 +12,6 @@ Update 1.1: [Here](https://github.com/maxgamertyper/PacmanBopl/blob/main/Pacman%
 Update 1.2:
 * allowed revives to go through the border
 * allowed teleports to go through the border
+
+Update 1.2.1:
+* reverts the update that makes it so revives cant go out of bounce breaking the mod
